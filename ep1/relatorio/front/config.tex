@@ -1,0 +1,157 @@
+%!TEX encoding = UTF-8 Unicode
+
+%packages
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}      % Encoding
+\usepackage[portuguese]{babel}   % Correção
+%\usepackage{caption}             % Legendas
+\usepackage{enumerate}
+
+% Matemática
+\usepackage{amsmath}             % Matemática
+\usepackage{amsthm, amssymb}     % Matemática
+\newtheorem*{def*}{Definição}
+\newtheorem*{invariant}{Invariante}
+
+% Gráficoshttps://preview.overleaf.com/public/cjyckkjhrcbg/images/b90c5a3de444d37d887a1e2dff4bd557468ec108.jpeg
+\usepackage[usenames,dvipsnames]{color}  % Cores
+\usepackage[pdftex]{graphicx}   % usamos arquivos pdf/png como figura
+\usepackage[usenames,svgnames,dvipsnames]{xcolor}
+
+% Desenhos
+\usepackage{tikz}
+\usepgfmodule{decorations}
+\usetikzlibrary{patterns}
+\usetikzlibrary{decorations.shapes}
+\usetikzlibrary{shapes.geometric}
+\usetikzlibrary{decorations.text}
+\usetikzlibrary{positioning} % Adjust grid size
+
+% Código-fonte
+\usepackage[noend]{algpseudocode}
+\usepackage{algorithm}
+
+% Configurações da página
+\usepackage{float}
+\usepackage{setspace}           % espaçamento flexível
+\usepackage{indentfirst}        % Identa primeiro parágrafo
+\usepackage{makeidx}
+\usepackage[nottoc]{tocbibind}  % acrescentamos a  bibliografia/indice/
+                                % conteudo no Table of bContents
+
+% Fontes
+\usepackage{courier}
+\usepackage{type1cm}            % fontes realmente escaláveis
+\usepackage{titletoc}
+\usepackage{pdflscape}          % Páginas em paisagem
+\usepackage{pdfpages}
+
+% Fontes e margens
+\usepackage[fixlanguage]{babelbib}
+\usepackage[font=small,format=plain,labelfont=bf,up,textfont=it,up]{caption}
+\usepackage[a4paper,top=2.54cm,bottom=2.0cm,left=2.0cm,right=2.54cm]{geometry}
+
+\usepackage{subcaption}
+\usepackage[toc,page]{appendix}
+
+% Referências e citações
+\usepackage[
+    pdftex,
+    breaklinks,
+    plainpages=false,
+    pdfpagelabels,
+    pagebackref,
+    colorlinks=true,
+    citecolor=DarkGreen,
+    linkcolor=DarkBlue,
+    urlcolor=DarkRed,
+    filecolor=green,
+    bookmarksopen=true
+]{hyperref}
+\usepackage[all]{hypcap} % Soluciona o problema com o hyperref e capitulos
+\usepackage[angle,sort]{natbib}
+
+%\bibpunct{(}{)}{;}{a}{\hspace{-0.7ex},}{,}  % Estilo de citação
+% \bibpunct{(}{)}{;}{a}{,}{,}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Cabeçalhos similares ao TAOCP de Donald E. Knuth
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\sectionmark}[1]{\markright{\MakeUppercase{#1}}{}}
+\renewcommand{\headrulewidth}{0pt}
+
+% Redefine \emph
+\makeatletter
+\DeclareRobustCommand{\em}{%
+  \@nomath\em \if b\expandafter\@car\f@series\@nil
+  \normalfont \else \bfseries \fi}
+\makeatother
+
+\usepackage{afterpage}
+
+\newcommand\blankpage{%
+    \null
+    \newpage}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\frenchspacing              % arruma o espaço: i.e. e e.g.
+\urlstyle{same}             % URL com o mesmo estilo do texto
+                            % e não mono-spaced
+\makeindex                  % para o índice remissivo
+\raggedbottom               % para não permitir espaços extra no texto
+\fontsize{60}{62}\usefont{OT1}{cmr}{m}{n}{\selectfont}
+\cleardoublepage
+\normalsize
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% INFORMAÇÕES
+\pdfinfo{
+  /Title    (Título da Monografia)
+  /Author   (Autor)
+  /Creator  (Autor)
+  /Producer (Autor)
+  /Subject  (Trabalho de Conclusão de Curso)
+  /Keywords (TCC, BCC, Tema)
+}
+
+\usepackage{eso-pic}
+\newcommand\AlCentroPagina[1]{%
+  \AddToShipoutPicture*{\AtPageCenter{%
+  \makebox(0,0){\includegraphics%
+  [width=0.6\paperwidth]{#1}}}}}
+
+\newcommand{\monoAutor}{Fellipe Souto Sampaio}
+\newcommand{\monoOrientadora}{Prof Dra Ana Cristina Viera de Melo}
+\newcommand{\monoUniversidade}{Universidade de São Paulo, Brasil}
+\newcommand{\monoObj}{Dissertação para obteção do título de Bacharel em Ciência da Computação}
+\newcommand{\monoTitulo}{Um estudo do Modelo de Atores aplicado à concorrência de recursos}
+\newcommand{\monoData}{01 de Dezembro de 2016}
+\newcommand{\monoAno}{2016}
+
+\usepackage{fancyhdr}
+\pagestyle{empty}
+
+\newenvironment{abstract}%
+{\clearpage\null \begin{center}%
+\bfseries\abstractname \end{center}}%
+{\vfill\null}
+
+\usepackage{epigraph}
+
+\setlength\epigraphwidth{.8\textwidth}
+
+\newenvironment{dedication}
+  {%\clearpage           % we want a new page          %% I commented this
+   \thispagestyle{empty}% no header and footer
+   \vspace*{\stretch{1}}% some space at the top
+   \raggedleft          % flush to the right margin
+  }
+  {\par % end the paragraph
+   \vspace{\stretch{3}} % space at bottom is three times that at the top
+   \clearpage           % finish off the page
+  }
