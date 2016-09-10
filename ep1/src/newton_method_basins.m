@@ -21,7 +21,7 @@ function [x_r, x_i, in] = newton(f, f_line, x_0)
   abs_x = abs(x_k_1 - x_k);
   m_abs_x = abs_x;
 
-  while (abs_x > delta) && (in < mx_in)
+  while (abs_x > delta) && (in <= mx_in)
     % pause ();
     in++;
     x_k = x_k_1;
@@ -62,31 +62,69 @@ function [x_r, x_i, in] = newton(f, f_line, x_0)
     % printf("Inter %d!!!\n", in);
 
   endwhile
-  % printf("After For!!!\n");
+
+  if(in > mx_in)
+    x_r = Inf;
+    x_i = Inf;
+  endif
 
 endfunction
 
-function [] = newton_basins(f_x, n)
-  step = 0.25;
-  C_line = -n:step:n;
-  f_x_line = polyder(f_x);
-  delta = 1.e-8;
+function[] = write_output(m_result)
   
-  for x = C_line
-    for y = C_line
-      % printf("i = %d j = %d\n", x, y);
-      [x_r, x_i, in] = newton(f_x, f_x_line, (x + y*i));
-      if(abs(x_r) < delta)
-        printf("%d %d %f\n", x, y, x_i);
-      else
-        printf("%d %d %f\n", x, y, x_r);
-      endif
-    endfor
+  color = 0;
+  actual_root = m_result(1, 3);
+
+  for i = 1:rows(m_result)
+    if(actual_root != m_result(i, 3))
+      actual_root = m_result(i, 3);
+      color++;
+    endif
+
+    % printf("%f %f %d ", real(m_result(i, 1)), real(m_result(i, 2)), color);
+    % disp(m_result(i, 3));
+    % printf("\n")
+
+    printf("%.3f %.3f %d\n", real(m_result(i, 1)), real(m_result(i, 2)), color);
+
   endfor
 
 endfunction
 
+function [] = newton_basins(f_x, n)
+  step = 1;
+  C_line = -n:step:(n - step);
+  f_x_line = polyder(f_x);
+  delta = 1.e-8;
+  m_result = [];
+
+
+  for x = C_line
+    for y = C_line
+      % printf("i = %d j = %d\n", x, y);
+      [x_r, x_i, in] = newton(f_x, f_x_line, (x + y*i));
+
+      if(x_r == Inf || x_i == Inf)
+        m_result = [m_result ; [x, y, Inf]];
+      elseif(abs(x_r) < delta)
+        m_result = [m_result ; [x, y, (x_i*i)]];
+      elseif(abs(x_i) < delta)
+        m_result = [m_result ; [x, y, x_r]];
+      else
+        m_result = [m_result ; [x, y, (x_r + x_i*i)]];
+      endif
+
+    endfor
+  endfor
+
+  % printf("Matrix : \n")
+  % disp(sortrows(m_result, [3]))
+  write_output(sortrows(m_result, [3]));
+  printf("\nTotal of lines: %d", rows(m_result));
+endfunction
+
 
 f_x = [1, 0, 0, 0, -1];
-n = 2;
+n = 10;
 newton_basins(f_x, n);
+printf("\n");
