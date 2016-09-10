@@ -17,7 +17,7 @@ function [x_r, x_i, in] = newton(f, f_line, x_0)
   x_k = Inf + i;
   x_k_1 = x_0;
   in = 0;
-  mx_in = 30;
+  mx_in = 15;
   abs_x = abs(x_k_1 - x_k);
   m_abs_x = abs_x;
 
@@ -72,32 +72,40 @@ endfunction
 
 function[] = write_output(m_result)
   
-  color = 0;
+  color = 1;
   actual_root = m_result(1, 3);
-
+  fact = 64;
   for i = 1:rows(m_result)
     if(actual_root != m_result(i, 3))
       actual_root = m_result(i, 3);
       color++;
     endif
 
+    m_result(i, 3) = mod(fact, color);
     % printf("%f %f %d ", real(m_result(i, 1)), real(m_result(i, 2)), color);
     % disp(m_result(i, 3));
     % printf("\n")
 
-    printf("%.3f %.3f %d\n", real(m_result(i, 1)), real(m_result(i, 2)), color);
+    % printf("%d %d %d\n", real(m_result(i, 1)), real(m_result(i, 2)), color);
 
+  endfor
+
+  m_result = sortrows(m_result, [1, 2]);
+
+  for i = 1:rows(m_result)
+    printf("%f %f %d\n", real(m_result(i, 1)), real(m_result(i, 2)), m_result(i, 3));
   endfor
 
 endfunction
 
 function [] = newton_basins(f_x, n)
-  step = 1;
+  step = 0.02;
   C_line = -n:step:(n - step);
   f_x_line = polyder(f_x);
   delta = 1.e-8;
   m_result = [];
 
+  printf("Total of points : %d\n", columns(C_line)*columns(C_line));
 
   for x = C_line
     for y = C_line
@@ -125,6 +133,6 @@ endfunction
 
 
 f_x = [1, 0, 0, 0, -1];
-n = 10;
+n = 3;
 newton_basins(f_x, n);
 printf("\n");
