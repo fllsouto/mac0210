@@ -70,10 +70,10 @@ function [x_r, x_i, it] = newton(f, f_line, x_0)
 endfunction
 
 function[] = write_output(m_result)
-
   color = 1;
   actual_root = m_result(1, 3);
   fact = 64;
+
   for i = 1:rows(m_result)
     if(actual_root != m_result(i, 3))
       actual_root = m_result(i, 3);
@@ -89,11 +89,13 @@ function[] = write_output(m_result)
 
   endfor
 
+  fd = fopen("output.txt", "w");
   m_result = sortrows(m_result, [1, 2]);
-
   for i = 1:rows(m_result)
-    printf("%f %f %d\n", real(m_result(i, 1)), real(m_result(i, 2)), m_result(i, 3));
+    # printf("%f %f %d\n", real(m_result(i, 1)), real(m_result(i, 2)), m_result(i, 3));
+    fprintf(fd, "%f %f %f\n", real(m_result(i, 1)), real(m_result(i, 2)), m_result(i, 3));
   endfor
+  fclose(fd);
 
 endfunction
 
@@ -108,7 +110,7 @@ function [] = newton_basins(f_x, n)
 
   for x = C_line
     for y = C_line
-      % printf("i = %d j = %d\n", x, y);
+      % printf("i = %f j = %f\n", x, y);
       [x_r, x_i, it] = newton(f_x, f_x_line, (x + y*i));
 
       if(x_r == Inf || x_i == Inf)
@@ -127,7 +129,7 @@ function [] = newton_basins(f_x, n)
   % printf("Matrix : \n")
   % disp(sortrows(m_result, [3]))
   write_output(sortrows(m_result, [3]));
-  printf("\nTotal of lines: %d", rows(m_result));
+  printf("Total of lines: %d\n", rows(m_result));
 endfunction
 
 
