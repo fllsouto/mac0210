@@ -10,7 +10,7 @@
 # Renan Fichberg - 7991131
 
 
-function [x_r, x_i, it] = newton(f, f_line, x_0)
+function [x_r, x_i] = newton(f, f_line, x_0)
   delta = 1.e-8;
   x_k = Inf + i;
   x_k_1 = x_0;
@@ -20,120 +20,84 @@ function [x_r, x_i, it] = newton(f, f_line, x_0)
   m_abs_x = abs_x;
 
   while (abs_x > delta) && (it <= mx_it)
-    % pause ();
     it++;
     x_k = x_k_1;
     f_x_k =  polyval(f, x_k);
 
-    % Divisao por zero em potencial
     f_line_x_k =  polyval(f_line, x_k);
 
-
-    % printf("f_line_x_k : %f\n")
-    % disp( f_line_x_k)
-
-    % printf("f_x_k : %f\n")
-    % disp(f_x_k)
-
     if f_line_x_k != 0
-      f_q = f_x_k/f_line_x_k;
-    % TODO: think about the correctness of the attribution performed in the following else block.
+      x_k_1 = x_k - (f_x_k/f_line_x_k);
+      abs_x = abs(x_k_1 - x_k);
+
+      if(abs_x < m_abs_x)
+        x_r = real(x_k_1);
+        x_i = imag(x_k_1);
+        m_abs_x = abs_x;
+      endif
+
+      if(it > mx_it)
+        x_r = Inf;
+        x_i = Inf;
+      endif
     else
-      f_q = f_x_k;
+      x_r = Inf;
+      x_i = Inf;
+      break;
     endif
-
-    x_k_1 = x_k - (f_q);
-
-    % printf("x_k : %f\n")
-    % disp(x_k)
-
-    % printf("x_k_1 : %f\n")
-    % disp(x_k_1)
-
-    % printf("abs: %f\n\n\n", abs(x_k_1 - x_k))
-    abs_x = abs(x_k_1 - x_k);
-
-    if(abs_x < m_abs_x)
-      x_r = real(x_k_1);
-      x_i = imag(x_k_1);
-      m_abs_x = abs_x;
-    endif
-    % printf("Iter %d!!!\n", it);
-
   endwhile
-
-  if(it > mx_it)
-    x_r = Inf;
-    x_i = Inf;
-  endif
-
 endfunction
 
 function[] = write_output(m_result)
-  color = 1;
-  actual_root = m_result(1, 3);
-  fact = 64;
-
-  for i = 1:rows(m_result)
-    if(actual_root != m_result(i, 3))
-      actual_root = m_result(i, 3);
-      color++;
-    endif
-
-    m_result(i, 3) = mod(fact, color);
-    % printf("%f %f %d ", real(m_result(i, 1)), real(m_result(i, 2)), color);
-    % disp(m_result(i, 3));
-    % printf("\n")
-
-    % printf("%d %d %d\n", real(m_result(i, 1)), real(m_result(i, 2)), color);
-
-  endfor
-
   fd = fopen("output.txt", "w");
+
   m_result = sortrows(m_result, [1, 2]);
   for i = 1:rows(m_result)
-    # printf("%f %f %d\n", real(m_result(i, 1)), real(m_result(i, 2)), m_result(i, 3));
-    fprintf(fd, "%f %f %f\n", real(m_result(i, 1)), real(m_result(i, 2)), m_result(i, 3));
+    fprintf(fd, "%.8f %.8f %.8f\n", real(m_result(i, 1)), real(m_result(i, 2)), m_result(i, 3));
   endfor
   fclose(fd);
-
 endfunction
 
 function [] = newton_basins(f_x, n)
-  step = 0.02;
-  C_line = -n:step:(n - step);
-  f_x_line = polyder(f_x);
+  step = 0.05;
+  C_line = -n:step:n;
+  f_x_line = polyder(f_x); % rename to f x prime
   delta = 1.e-8;
   m_result = [];
+  association = [0, [Inf, Inf]];
+  integer = 1;
 
-  printf("Total of points : %d\n", columns(C_line)*columns(C_line));
-
+  printf("Points : %d\n", columns(C_line) * columns(C_line));
   for x = C_line
     for y = C_line
-      % printf("i = %f j = %f\n", x, y);
-      [x_r, x_i, it] = newton(f_x, f_x_line, (x + y*i));
+      [x_r, x_i] = newton(f_x, f_x_line, (x + y*i));
 
-      if(x_r == Inf || x_i == Inf)
-        m_result = [m_result ; [x, y, Inf]];
-      elseif(abs(x_r) < delta)
-        m_result = [m_result ; [x, y, (x_i*i)]];
-      elseif(abs(x_i) < delta)
-        m_result = [m_result ; [x, y, x_r]];
+      if(abs(x_r) == Inf || abs(x_i) == Inf)
+        m_result = [m_result; [x, y, 0]];
+      elseif(rows(association) == 1)
+        association = [association; [integer, x_r, x_i]];
+        m_result = [m_result; [x, y, integer++]];
       else
-        m_result = [m_result ; [x, y, (x_r + x_i*i)]];
+        index = 1;
+        while(index <= rows(association))
+          arr = association(index, 1:3);
+          if(abs(x_r - arr(2)) <= delta && abs(x_i - arr(3)) <= delta)
+            m_result = [m_result; [x, y, arr(1)]];
+            break;
+          elseif(index++ == rows(association))
+            association = [association; [integer, x_r, x_i]];
+            m_result = [m_result; [x, y, integer++]];
+            break;
+          endif
+        endwhile
       endif
-
     endfor
   endfor
-
-  % printf("Matrix : \n")
-  % disp(sortrows(m_result, [3]))
-  write_output(sortrows(m_result, [3]));
-  printf("Total of lines: %d\n", rows(m_result));
+  write_output(m_result);
+  printf("Lines: %d\n", rows(m_result));
 endfunction
 
-
-f_x = [1, 0, 0, 0, -1];
-n = 3;
+f_x = [23, 0, 2, 42, -1, -12];
+n = 4;
 newton_basins(f_x, n);
 printf("\n");
