@@ -1,0 +1,8 @@
+Eu tenho o intervalo [a,b]
+Eu divido [a,b] em X sub-intervalos (b_i - a_i) iguais
+Dentro dos sub-intervalos eu divido em N pontos para discretizar x e calcular f(x)
+Calcular a derivada para ver se muda o sinal
+  Se dentro do sub-intervalo a primeira ou segunda derivada, eu não lembro, trocar de sinal esse sub-intervalo deve ser calculado
+
+  Senão não faça nada
+Tenho os sub-intervalos para calcular o método
