@@ -10,7 +10,7 @@
 # Renan Fichberg - 7991131
 
 
-function [x_r, x_i] = newton(f, f_line, x_0)
+function [x_r, x_i] = newton(f, f_prime, x_0)
   delta = 1.e-8;
   x_k = Inf + i;
   x_k_1 = x_0;
@@ -24,10 +24,10 @@ function [x_r, x_i] = newton(f, f_line, x_0)
     x_k = x_k_1;
     f_x_k =  polyval(f, x_k);
 
-    f_line_x_k =  polyval(f_line, x_k);
+    f_prime_x_k =  polyval(f_prime, x_k);
 
-    if f_line_x_k != 0
-      x_k_1 = x_k - (f_x_k/f_line_x_k);
+    if f_prime_x_k != 0
+      x_k_1 = x_k - (f_x_k/f_prime_x_k);
       abs_x = abs(x_k_1 - x_k);
 
       if(abs_x < m_abs_x)
@@ -61,7 +61,7 @@ endfunction
 function [] = newton_basins(f_x, n)
   step = 0.05;
   C_line = -n:step:n;
-  f_x_line = polyder(f_x); % rename to f x prime
+  f_x_prime = polyder(f_x);
   delta = 1.e-8;
   m_result = [];
   association = [0, [Inf, Inf]];
@@ -70,7 +70,7 @@ function [] = newton_basins(f_x, n)
   printf("Points : %d\n", columns(C_line) * columns(C_line));
   for x = C_line
     for y = C_line
-      [x_r, x_i] = newton(f_x, f_x_line, (x + y*i));
+      [x_r, x_i] = newton(f_x, f_x_prime, (x + y*i));
 
       if(abs(x_r) == Inf || abs(x_i) == Inf)
         m_result = [m_result; [x, y, 0]];
