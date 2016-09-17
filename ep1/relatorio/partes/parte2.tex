@@ -5,24 +5,40 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Método de Newton}\label{partes:newtonMethod}
 
-  Lorem ipsum dolor sit amet, elit quam, elementum bibendum tempus sed etiam, in consectetur nunc leo, interdum ut, suscipit pretium at vel velit nunc. In est tellus pede excepteur, praesent quisque elit, tempus nam vestibulum. Phasellus dolor lectus, nec erat curabitur dui laoreet. Amet at libero, interdum vel diam neque quis vel erat, mauris diam lectus suspendisse, fusce orci malesuada quis dui justo. Nonummy posuere, eu volutpat felis tellus auctor nunc, torquent mus urna lectus, fugiat mauris non praesent, ut sed quisque vestibulum eros vel turpis. Congue sed nulla, magna ut sociis eu, mus suscipit nunc aliquam, velit non ultricies duis, illo rhoncus nec integer nonummy eleifend suscipit. Non nec. Ut aliquam ac ut, eros sapien a lectus ac vivamus. \citet{einstein}.
+  A implementação do nosso Método de Newton se baseou na disponível em \cite{numericalMethods}. Para calcular a sequência de valores $X_k$ aplicamos o seguinte pseudo-algoritmo:
 
-  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  \section{Algoritmo}
-  \label{sec:alg}
+  \begin{algorithm}
+    \caption{Método de Newton}\label{euclid}
+    \begin{algorithmic}[1]
+    \Procedure{Newton}{}
+      \State {$ X_K \gets \infty + i $}
+      \State {$ X_{k+1} \gets X_K $}
+      \State {$ mx\_it \gets 15 $}
+      \State {$ \delta \gets 1.0 \times 10^{-8} $ \\}
+      \While{$abs(X_{k + 1} - X_{k} > \delta) || (it < mx\_it)$}
+        \State {$ it++ $}
+        \State {$ X_K = X_{k + 1} $}
+        \If {$ f^{'}(X_k) == 0 $}
+          \State {O método não está definido para esse ponto, então consideramos que ele falhou}
+          \State{\Return{$\infty + \infty \times i$}}
+        \Else
+          \State {$X_{k + 1} \gets X_K - \frac{f(X_k)}{f^{'}(X_k)}$}\\
+          \If {$ it > mx\_it $}
+            \State {O método não está convergindo, então consideramos que ele falhou}
+            \State{\Return{$\infty + \infty \times i$}}
+          \EndIf
+        \EndIf
+      \EndWhile
+      \State {A raíz encontrada é $X_K = X + Y \times i$}
+      \State{\Return{$X + Y \times i$}}
+    \EndProcedure
+    \end{algorithmic}
+  \end{algorithm}
 
-    Nisl praesent. Malesuada odio purus sit quis nunc consectetuer, amet ante nisl lectus dictum velit nisl, vulputate est vitae justo sit cras. Mauris mi faucibus praesent lorem commodo, varius nunc sed cras. Aenean a sed maecenas massa, habitant nam sed wisi, enim metus blandit elementum morbi. Neque sem id, nisl eleifend lacus adipiscing velit ligula, taciti at. Mauris wisi tellus faucibus dolor integer dolor, risus scelerisque dui \citet*{latexcompanion}.
+  Escolhemos um número fixo de iterações igual a 15, em testes práticos demonstrou-se que a função convergia em no máximo 12 iterações. Repetimos esse algoritmo para todos os pontos da nossa partição escolhida, e para cada resposta fazemos um mapeamento da raíz para um inteiro. \\
 
-  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  \section{Decisões de design}
-  \label{sec:design}
+  Um polinômio de grau N com raízes distintas mapeia N+1 cores diferentes, a cor adicional, neste caso preto, serve para identificar os pontos em que o método falhou.
 
-    Nisl praesent. Malesuada odio purus sit quis nunc consectetuer, amet ante nisl lectus dictum velit nisl, vulputate est vitae justo sit cras. Mauris mi faucibus praesent lorem commodo, varius nunc sed cras. Aenean a sed maecenas massa, habitant nam sed wisi, enim metus blandit elementum morbi. Neque sem id, nisl eleifend lacus adipiscing velit ligula, taciti at. Mauris wisi tellus faucibus dolor integer dolor, risus scelerisque dui
-  
-  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  \section{Bacias de convergencia}
-  \label{sec:imgs}
+  Realizamos testes com diferentes funções, variando a quantidade de pixeis na imagem. Os gráficos podem ser encontrados no Apêndice (\ref{chap:appendix}) desse relatório.
 
-    Terminando a teoria teoria teoria teoria teoria teoria \citep{knuthwebsite}\footnote{teste 123 pg. 77-79} teoria teoria...
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
