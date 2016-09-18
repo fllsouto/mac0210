@@ -59,7 +59,7 @@ function[] = write_output(m_result)
 endfunction
 
 function [] = newton_basins(f_x, n)
-  step = 0.05;
+  step = 0.02;
   C_line = -n:step:n;
   f_x_prime = polyder(f_x);
   delta = 1.e-8;
@@ -97,7 +97,7 @@ function [] = newton_basins(f_x, n)
   printf("Lines: %d\n", rows(m_result));
 endfunction
 
-f_x = [23, 0, 2, 42, -1, -12];
-n = 4;
+f_x = [1, 0, 0, 15, 0, 0, 0, 0, 16];
+n = 3;
 newton_basins(f_x, n);
 printf("\n");
