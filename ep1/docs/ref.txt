@@ -1,0 +1,5 @@
+This sort of behaviour, expanding a small area into a large one, is exactly the sort of behaviour we expect to give rise to self-similar fractals. So if we were to start a Newton-Raphson iteration at each point on the real line, run each iteration until it converged to within a given tolerance level of a root, and then colour the starting point according to which root it ended up at, we might well expect to see fractal shapes. 
+
+http://mathworld.wolfram.com/NewtonsMethod.html
+
+http://www.chiark.greenend.org.uk/~sgtatham/newton/
