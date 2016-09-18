@@ -5,20 +5,50 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Encontrando Todas as Raízes de Funções}\label{partes:allRootsFunction}
 
-  Lorem ipsum dolor sit amet, elit quam, elementum bibendum tempus sed etiam, in consectetur nunc leo, interdum ut, suscipit pretium at vel velit nunc. In est tellus pede excepteur, praesent quisque elit, tempus nam vestibulum. Phasellus dolor lectus, nec erat curabitur dui laoreet. Amet at libero, interdum vel diam neque quis vel erat, mauris diam lectus suspendisse, fusce orci malesuada quis dui justo. Nonummy posuere, eu volutpat felis tellus auctor nunc, torquent mus urna lectus, fugiat mauris non praesent, ut sed quisque vestibulum eros vel turpis. Congue sed nulla, magna ut sociis eu, mus suscipit nunc aliquam, velit non ultricies duis, illo rhoncus nec integer nonummy eleifend suscipit. Non nec. Ut aliquam ac ut, eros sapien a lectus ac vivamus. \citet{einstein}.
+  No enunciado da terceira questão é mencionado sobre uma função f(x) de classe $C^2$ definida em um intervalo [a, b]. Foi, então, suposto por nós que a e b são números reais, e por ser de classe $C^2$, a função f(x) é garantidamente contínua.\\
 
-  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  \section{Algoritmo}
-  \label{sec:alg}
+  Para usar o programa, é necessário fazer as devidas modificações:\\
+  \begin{enumerate}
+    \item Mudar o valor da variável \textit{choice} para um dos valores: 1, 2 ou 3.
+    \begin{enumerate}
+      \item Para choice = 1, o programa considerará a função $f(x) = 2cosh(\frac{x}{4}) - x$
+      \item Para choice = 2, o programa considerará a função $f(x) = \frac{sin(x)}{x}$ se $x \neq 0$ ou $f(x) = 1$ se $x = 0$
+      \item Para choice = 3, o programa considerará um polinomio, que deve ser escrito de acordo com a sintaxe do Octave, na função \textit{function3}, no código do programa. Convém que a função que representa o polinomia seja, no mínimo, de classe $C^2$, conforme exigência do enunciado (isso fica a cargo do usuário e não do programa).
+    \end{enumerate}
+    \item Mudar os valores das variáveis \textit{lower\_edge} e \textit{higher\_edge} (estas fazem os papeis de a e b do enunciado, respectivamente).
+    \item Mudar o valor da variável n\_inter para o número de partições (sub-intervalos) em que o intervalo [a, b] deve ser dividido.
+    \item Mudar a tolerância \textit{tol} do erro para aceitar o valor calculado pelo método de Newton como significativamente próximo ao valor real da raíz.
+  \end{enumerate}
 
-    Nisl praesent. Malesuada odio purus sit quis nunc consectetuer, amet ante nisl lectus dictum velit nisl, vulputate est vitae justo sit cras. Mauris mi faucibus praesent lorem commodo, varius nunc sed cras. Aenean a sed maecenas massa, habitant nam sed wisi, enim metus blandit elementum morbi. Neque sem id, nisl eleifend lacus adipiscing velit ligula, taciti at. Mauris wisi tellus faucibus dolor integer dolor, risus scelerisque dui \citet*{latexcompanion}.
+  Finalmente, atribuídos os valores iniciais, o programa vai realizar a tarefa que foi designada a nós no enunciado da seguinte maneira:\\
+  \begin{itemize}
+  \item{Será invocado o método \textit{intervals}, que é onde tudo acontecerá. Deve-se escolher o tamanho dos passos (= steps, caso não goste do que está escrito no código)}
+  \item{A variável \textit{range} conterá todos os pontos x de f(x) que deverão ser testados para encontrar a raíz}
+  \item{A variável \textit{sub\_interval} serve para monitorar qual é o número do intervalo em que o ponto x que está sendo testado está}
+  \item{A variável \textit{sub\_inter\_length} guarda o tamanho das partições, enquanto as variáveis \textit{sub\_lower\_edge} e \textit{sub\_higher\_edge}
+  guardam os limites da participação atual (em que o programa se encontra em tempo de execução)}
+  \end{itemize}
 
-  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  \section{Decisões de design}
-  \label{sec:design}
-
-    Nisl praesent. Malesuada odio purus sit quis nunc consectetuer, amet ante nisl lectus dictum velit nisl, vulputate est vitae justo sit cras. Mauris mi faucibus praesent lorem commodo, varius nunc sed cras. Aenean a sed maecenas massa, habitant nam sed wisi, enim metus blandit elementum morbi. Neque sem id, nisl eleifend lacus adipiscing velit ligula, taciti at. Mauris wisi tellus faucibus dolor integer dolor, risus scelerisque dui
+  Note que para um intervalo [a, e] dividido em 4 partes, as partições de [a, e] são [a, b]; ]b, c]; ]c, d], ]d, e] respectivamente, além disso apenas a primeira partição possui o inteiro limitante inferior.\\
   
-  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  Em seguida, o primeiro ponto do nosso intervalo é avaliado em f(x) separadamente para obtermos o sinal inicial de f(x). Se dermos sorte e o primeiro valor já for zero, significa que primeiro ponto é uma raiz. Neste caso, haverá uma impressão do intervalo, o número do intervalo e o valor da raíz no terminal. Note que valor 1 representa sinal não negativo e o valor 2 representa sinal negativo.\\
+
+  Obtido o sinal, o programa entra em um loop que vai do segundo ao penúltimo valor de x. Calculamos o novo valor $f(x_1)$, considerando que $x_1$ é o ponto seguinte da sequência após x. Com isso temos os possíveis resultados:\\
+
+  \begin{itemize}
+  \item{Se $f(x_1) = 0$ então uma raíz foi encontrada em $x_1$, e nesse caso o sinal é considerado positivo, as informações são impressar e o laço já recomeça a próxima iteração, sem rodar o método de Newton}
+  \item{Se houver uma mudança de sinal de f(x) para $f(x_1)$ significa que existe uma raíz entre esses dois pontos, e nesse caso aplicamos o método de Newton para buscar uma aproximação do valor real da raiz considerando a tolerância tol}
+  \end{itemize}
+
+  Se a cada iteração o decrescimento não for significativo (isto é, nosso ponto de partida x não é tão bom e, portanto, não estamos conseguindo aproximações expressivas do valor real da raíz), o método de Newton será interrompido e um novo valor do x atual será buscado pelo método da biseção (que fará 3 iterações apenas, conforme o enunciado pede).\\
+
+  Encontrado o novo valor de x pelo método da biseção, usamos este valor como entrada do método de Newton e assim obteremos, eventualmente, a nova raíz até então desconhecida. Ao encontrar a raíz, assim como nas vezes anteriores, será impresso no terminal as suas informações.\\
+
+  Isso é repetido até que chegamos, finalmente, ao final da iteração do penúltimo valor de x a ser testado, finalizando assim o loop principal do programa. Após isso é checado separadamente o último valor de x, considerando o penúltimo valor de x.\\
+
+  O código pertinente a esta parte está bastante comentado, então entendendo esta explicação e acompanhando o código deve ser mais que o suficiente para entender a implementação sem maiores dificuldades.\\
+
+  Realizamos a execução do programa para as três possíveis choises do programa, os resultados dos testes podem ser encontrado no Apêncide (\ref{section:allRoots}) desse relatório. O programa foi implementado no arquivo \textbf{n\_roots\_function.m}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
